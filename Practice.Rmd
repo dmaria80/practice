@@ -1,0 +1,58 @@
+---
+title: "Practice Test"
+output: 
+  flexdashboard::flex_dashboard:
+    orientation: columns
+    vertical_layout: fill
+---
+
+```{r setup, include=FALSE}
+library(flexdashboard)
+library(Lahman)
+library(devtools)
+library(ggplot2)
+library(sqldf)
+```
+
+Column {data-width=650}
+-----------------------------------------------------------------------
+
+### Chart A
+
+```{r message=FALSE, warning=FALSE}
+query<-"Select playerID,SB
+From Batting
+Where playerID='loftoke01'"
+
+result<-sqldf(query)
+
+ggplot()+
+  geom_histogram(data=result,aes(x=SB),bins=5,fill='white',color='blue')
+```
+
+Column {data-width=350}
+-----------------------------------------------------------------------
+
+### Chart B
+
+```{r}
+query<-"Select playerID,teamID, Sum(SB) AS career_SB
+From Batting
+Where PlayerID='loftoke01'
+Group By teamID
+Order By Sum(SB)"
+
+result<-sqldf(query)
+
+result$teamID<-factor(result$teamID,levels=result$teamID)
+
+ggplot()+
+  geom_bar(data=result,aes(x=teamID,y=career_SB),stat='identity')
+```
+
+### Chart C
+
+```{r}
+
+```
+
